@@ -11,12 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up GraalVM (JDK 17)
-        uses: graalvm/setup-graalvm@v1
+      # L'Action magique : On utilise le GraalVM spécifique de Gluon
+      - name: Setup Gluon's GraalVM
+        uses: gluonhq/setup-graalvm@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          java-version: '17'
-          distribution: 'graalvm-community' # On utilise le nom officiel
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          graalvm: '22.1.0.1-Final'
+          jdk: 'java17'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -27,5 +29,10 @@ jobs:
         run: |
           chmod +x mvnw
           ./mvnw -B -e clean gluonfx:build gluonfx:package \
-            -Dgluonfx.target=android \
-            -Dgluonfx.nativeimage.args="-H:-UseCAPCache"
+            -Dgluonfx.target=android
+            
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mon-application-android
+          path: target/gluonfx/android/*.apk
