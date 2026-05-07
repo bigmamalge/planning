@@ -67,7 +67,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>org.example.planning.HelloApplication</mainClass>
+                    <mainClass>org.example.planning.Launcher</mainClass>
                 </configuration>
             </plugin>
 
