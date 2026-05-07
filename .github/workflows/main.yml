@@ -19,10 +19,11 @@ jobs:
           graalvm: '22.1.0.1-Final'
           jdk: 'java17'
 
+      # On utilise bien Android 34, requis par ton plugin
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          packages: 'platforms;android-33 build-tools;33.0.2 ndk;25.2.9519653'
+          packages: 'platforms;android-34 build-tools;34.0.0 ndk;26.1.10909125'
 
       - name: Préparer Maven
         run: chmod +x mvnw
@@ -34,16 +35,15 @@ jobs:
 
       - name: 2. Package APK
         run: |
-          # 1. On force l'emplacement du dossier Android pour éviter les bugs de droits
-          export ANDROID_USER_HOME=$HOME/.android
-          mkdir -p $ANDROID_USER_HOME
-          rm -f $ANDROID_USER_HOME/debug.keystore
+          # LE COUP DE GRÂCE : On force Gluon à utiliser le SDK parfait de GitHub
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
           
-          # 2. On génère manuellement la clé avec le format JKS (Le format que Gradle exige)
-          keytool -genkey -v -keystore $ANDROID_USER_HOME/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" -storetype JKS
+          # On crée la clé de secours avec la syntaxe moderne au cas où
+          mkdir -p ~/.android
+          keytool -genkeypair -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" -storetype PKCS12 || true
           
-          # 3. On enlève le chemin parasite et on package !
-          unset ANDROID_SDK_ROOT
+          # On lance le packaging
           ./mvnw -B -e gluonfx:package -Dgluonfx.target=android
             
       - name: Upload APK
@@ -51,10 +51,3 @@ jobs:
         with:
           name: mon-application-android
           path: target/gluonfx/aarch64-android/gvm/*.apk
-
-      - name: Upload Logs
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: logs-erreur
-          path: target/gluonfx/aarch64-android/gvm/log/
