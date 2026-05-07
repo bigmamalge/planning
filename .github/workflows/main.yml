@@ -11,29 +11,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 21 (GraalVM)
+      - name: Set up Gluon GraalVM (JDK 17)
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '21'
-          distribution: 'graalvm'
+          java-version: '17'
+          distribution: 'gluon-graalvm' # Distribution patchée par Gluon
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # ÉTAPE CRUCIALE : On installe le NDK AVANT de compiler
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           packages: 'platforms;android-34 build-tools;34.0.0 ndk;26.1.10909125'
 
-      - name: Build with Maven (Gluon)
+      - name: Build with Maven
         run: |
           chmod +x mvnw
           ./mvnw -B -e clean gluonfx:build gluonfx:package \
-            -Dgluonfx.target=android \
-            -Dgluonfx.force.new.capcache=true \
-            -Dgluonfx.nativeimage.args="-H:+UnlockExperimentalVMOptions"
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: mon-application-android
-          path: target/gluonfx/android/*.apk
+            -Dgluonfx.target=android
