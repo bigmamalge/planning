@@ -1,0 +1,33 @@
+name: Android Build
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch: # Permet de lancer le build manuellement
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (GraalVM)
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build with Maven (Gluon)
+        run: |
+          chmod +x mvnw
+          ./mvnw gluonfx:build gluonfx:package -Dgluonfx.target=android
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mon-application-android
+          path: target/gluonfx/android/*.apk
