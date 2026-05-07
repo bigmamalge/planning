@@ -18,6 +18,7 @@
         <javafx.version>21.0.6</javafx.version>
     </properties>
 
+
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
