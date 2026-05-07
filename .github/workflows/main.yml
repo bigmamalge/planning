@@ -27,13 +27,11 @@ jobs:
       - name: Préparer Maven
         run: chmod +x mvnw
 
-      # ÉTAPE 1 : La Compilation (avec le patch mémoire)
       - name: 1. Build Native Image
         env:
           JAVA_TOOL_OPTIONS: "-XX:-UseContainerSupport"
         run: ./mvnw -B -e clean gluonfx:build -Dgluonfx.target=android
 
-      # ÉTAPE 2 : La Création de l'APK (sans le patch, pour éviter le bruit)
       - name: 2. Package APK
         run: ./mvnw -B -e gluonfx:package -Dgluonfx.target=android
             
@@ -42,3 +40,11 @@ jobs:
         with:
           name: mon-application-android
           path: target/gluonfx/aarch64-android/gvm/*.apk
+
+      # NOUVEAU : Récupère les logs pour nous si ça crashe
+      - name: Upload Logs en cas d'erreur
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-erreur
+          path: target/gluonfx/aarch64-android/gvm/log/
