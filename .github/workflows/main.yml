@@ -3,7 +3,7 @@ name: Android Build
 on:
   push:
     branches: [ master ]
-  workflow_dispatch: # Permet de lancer le build manuellement
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,8 +18,11 @@ jobs:
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      # On configure l'Android SDK AVEC le NDK avant de compiler
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-34 build-tools;34.0.0 ndk;26.1.10909125'
 
       - name: Build with Maven (Gluon)
         run: |
@@ -33,7 +36,3 @@ jobs:
         with:
           name: mon-application-android
           path: target/gluonfx/android/*.apk
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: 'platforms;android-34 build-tools;34.0.0 ndk;26.1.10909125' # On ajoute le NDK
