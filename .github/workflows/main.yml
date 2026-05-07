@@ -26,15 +26,17 @@ jobs:
 
       - name: Build with Maven
         env:
-          # LA LIGNE MAGIQUE : Empêche Java de planter sur les serveurs modernes
           JAVA_TOOL_OPTIONS: "-XX:-UseContainerSupport"
         run: |
           chmod +x mvnw
-          ./mvnw -B -e clean gluonfx:build gluonfx:package \
-            -Dgluonfx.target=android
+          # Étape 1 : La grosse compilation (On sait que ça marche !)
+          ./mvnw -B clean gluonfx:build -Dgluonfx.target=android
+          
+          # Étape 2 : Création de l'APK avec le mode débug (-X) activé
+          ./mvnw -B -X gluonfx:package -Dgluonfx.target=android
             
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: mon-application-android
-          path: target/gluonfx/android/*.apk
+          path: target/gluonfx/aarch64-android/gvm/*.apk
