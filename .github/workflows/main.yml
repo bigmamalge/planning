@@ -24,7 +24,9 @@ jobs:
       - name: Build with Maven (Gluon)
         run: |
           chmod +x mvnw
-          ./mvnw gluonfx:build gluonfx:package -Dgluonfx.target=android
+          ./mvnw -B -e gluonfx:clean gluonfx:build gluonfx:package \
+            -Dgluonfx.target=android \
+            -Dgluonfx.force.new.capcache=true
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
