@@ -7,17 +7,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest # On utilise les nouveaux serveurs rapides
     steps:
       - uses: actions/checkout@v4
 
-      # L'Action magique : On utilise le GraalVM spécifique de Gluon
       - name: Setup Gluon's GraalVM
         uses: gluonhq/setup-graalvm@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          graalvm: '22.1.0.1-Final'
+          graalvm: '22.1.0.1-Final' # Le GraalVM certifié pour Android
           jdk: 'java17'
 
       - name: Setup Android SDK
@@ -26,6 +25,9 @@ jobs:
           packages: 'platforms;android-34 build-tools;34.0.0 ndk;26.1.10909125'
 
       - name: Build with Maven
+        env:
+          # LA LIGNE MAGIQUE : Empêche Java de planter sur les serveurs modernes
+          JAVA_TOOL_OPTIONS: "-XX:-UseContainerSupport"
         run: |
           chmod +x mvnw
           ./mvnw -B -e clean gluonfx:build gluonfx:package \
