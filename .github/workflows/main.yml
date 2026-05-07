@@ -34,6 +34,13 @@ jobs:
 
       - name: 2. Package APK
         run: |
+          # 1. On crée le dossier Android caché
+          mkdir -p ~/.android
+          
+          # 2. On génère manuellement la clé de signature pour éviter le plantage "validateSigningDebug"
+          keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          
+          # 3. On enlève le chemin parasite et on package
           unset ANDROID_SDK_ROOT
           ./mvnw -B -e gluonfx:package -Dgluonfx.target=android
             
@@ -43,7 +50,6 @@ jobs:
           name: mon-application-android
           path: target/gluonfx/aarch64-android/gvm/*.apk
 
-      # NOUVEAU : Récupère les logs pour nous si ça crashe
       - name: Upload Logs en cas d'erreur
         if: failure()
         uses: actions/upload-artifact@v4
