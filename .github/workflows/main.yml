@@ -7,33 +7,36 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # On utilise les nouveaux serveurs rapides
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 21 (GraalVM)
-        uses: graalvm/setup-graalvm@v1
+      - name: Setup Gluon's GraalVM
+        uses: gluonhq/setup-graalvm@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          java-version: '21'
-          distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          graalvm: '22.1.0.1-Final' # Le GraalVM certifié pour Android
+          jdk: 'java17'
 
-      # ÉTAPE CRUCIALE : On installe le NDK AVANT de compiler
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           packages: 'platforms;android-34 build-tools;34.0.0 ndk;26.1.10909125'
 
-      - name: Build with Maven (Gluon)
+      - name: Build with Maven
+        env:
+          JAVA_TOOL_OPTIONS: "-XX:-UseContainerSupport"
         run: |
           chmod +x mvnw
-          ./mvnw -B -e clean gluonfx:build gluonfx:package \
-            -Dgluonfx.target=android \
-            -Dgluonfx.force.new.capcache=true \
-            -Dgluonfx.nativeimage.args="-H:+UnlockExperimentalVMOptions"
-
+          # Étape 1 : La grosse compilation (On sait que ça marche !)
+          ./mvnw -B clean gluonfx:build -Dgluonfx.target=android
+          
+          # Étape 2 : Création de l'APK avec le mode débug (-X) activé
+          ./mvnw -B -X gluonfx:package -Dgluonfx.target=android
+            
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: mon-application-android
-          path: target/gluonfx/android/*.apk
+          path: target/gluonfx/aarch64-android/gvm/*.apk

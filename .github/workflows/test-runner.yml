@@ -1,0 +1,15 @@
+name: Test Runner Version
+
+on:
+  workflow_dispatch: # Permet de le lancer manuellement
+
+jobs:
+  test-os:
+    runs-on: ubuntu-20.04 # Teste la version qui t'intéresse
+    steps:
+      - name: Afficher les infos du système
+        run: |
+          echo "==== Version de l'OS ===="
+          cat /etc/os-release
+          echo "==== Noyau Linux ===="
+          uname -a
