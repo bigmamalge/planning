@@ -14,7 +14,7 @@
         <junit.version>5.12.1</junit.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <gluonfx.plugin.version>1.0.22</gluonfx.plugin.version>
+        <gluonfx.plugin.version>1.0.23</gluonfx.plugin.version>
         <javafx.version>21.0.6</javafx.version>
     </properties>
 
@@ -43,6 +43,16 @@
         <dependency>
             <groupId>com.gluonhq.attach</groupId>
             <artifactId>lifecycle</artifactId>
+            <version>4.0.19</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gluonhq.attach</groupId>
+            <artifactId>statusbar</artifactId>
+            <version>4.0.19</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gluonhq.attach</groupId>
+            <artifactId>storage</artifactId>
             <version>4.0.19</version>
         </dependency>
 
@@ -74,7 +84,7 @@
             <plugin>
                 <groupId>com.gluonhq</groupId>
                 <artifactId>gluonfx-maven-plugin</artifactId>
-                <version>1.0.22</version>
+                <version>${gluonfx.plugin.version}</version>
                 <configuration>
                     <target>android</target>
                     <mainClass>org.example.planning.Launcher</mainClass>
@@ -83,10 +93,10 @@
                         <list>lifecycle</list>
                         <list>statusbar</list>
                         <list>storage</list>
+                        <list>util</list>
                     </attachList>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 </project>
