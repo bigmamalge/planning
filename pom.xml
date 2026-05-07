@@ -77,7 +77,7 @@
                 <version>1.0.22</version>
                 <configuration>
                     <target>android</target>
-                    <mainClass>org.example.planning.HelloApplication</mainClass>
+                    <mainClass>org.example.planning.Launcher</mainClass>
                     <attachList>
                         <list>display</list>
                         <list>lifecycle</list>
