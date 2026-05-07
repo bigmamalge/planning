@@ -18,7 +18,7 @@ jobs:
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # On configure l'Android SDK AVEC le NDK avant de compiler
+      # ÉTAPE CRUCIALE : On installe le NDK AVANT de compiler
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
@@ -29,7 +29,8 @@ jobs:
           chmod +x mvnw
           ./mvnw -B -e clean gluonfx:build gluonfx:package \
             -Dgluonfx.target=android \
-            -Dgluonfx.force.new.capcache=true
+            -Dgluonfx.force.new.capcache=true \
+            -Dgluonfx.nativeimage.args="-H:+UnlockExperimentalVMOptions"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
