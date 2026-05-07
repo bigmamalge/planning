@@ -19,23 +19,26 @@ jobs:
           graalvm: '22.1.0.1-Final'
           jdk: 'java17'
 
-      # On passe sur Android 33 (le standard en or pour Gluon)
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           packages: 'platforms;android-33 build-tools;33.0.2 ndk;25.2.9519653'
 
-      - name: Build and Package
-        run: |
-          chmod +x mvnw
-          # La commande ultime : on passe l'astuce mémoire proprement au compilateur
-          ./mvnw -B -e clean gluonfx:build gluonfx:package \
-            -Dgluonfx.target=android \
-            -Dgluonfx.nativeimage.args="-J-XX:-UseContainerSupport"
+      - name: Préparer Maven
+        run: chmod +x mvnw
+
+      # ÉTAPE 1 : La Compilation (avec le patch mémoire)
+      - name: 1. Build Native Image
+        env:
+          JAVA_TOOL_OPTIONS: "-XX:-UseContainerSupport"
+        run: ./mvnw -B -e clean gluonfx:build -Dgluonfx.target=android
+
+      # ÉTAPE 2 : La Création de l'APK (sans le patch, pour éviter le bruit)
+      - name: 2. Package APK
+        run: ./mvnw -B -e gluonfx:package -Dgluonfx.target=android
             
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: mon-application-android
-          # Le chemin exact où Gluon range l'APK final
           path: target/gluonfx/aarch64-android/gvm/*.apk
