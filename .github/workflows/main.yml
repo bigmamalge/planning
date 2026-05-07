@@ -24,7 +24,7 @@ jobs:
       - name: Build with Maven (Gluon)
         run: |
           chmod +x mvnw
-          ./mvnw -B -e gluonfx:clean gluonfx:build gluonfx:package \
+          ./mvnw -B -e clean gluonfx:build gluonfx:package \
             -Dgluonfx.target=android \
             -Dgluonfx.force.new.capcache=true
 
