@@ -29,20 +29,20 @@ jobs:
 
       - name: 1. Build Native Image
         env:
-          # On active l'astuce mémoire JUSTE pour la compilation
           JAVA_TOOL_OPTIONS: "-XX:-UseContainerSupport"
         run: ./mvnw -B -e clean gluonfx:build -Dgluonfx.target=android
 
       - name: 2. Package APK
         run: |
-          # LE COUP DE GRÂCE : On détruit la variable bavarde pour faire taire la console
+          # 1. On supprime la variable de GitHub pour éviter le conflit avec Gluon
+          unset ANDROID_SDK_ROOT
+          
+          # 2. On génère la clé de signature manuellement pour éviter le plantage de Gradle
+          mkdir -p ~/.android
+          keytool -genkeypair -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          
+          # 3. On enlève la variable bavarde de la mémoire et on package
           unset JAVA_TOOL_OPTIONS
-          
-          # On force le bon SDK Android de GitHub (pour éviter le téléchargement de Gluon)
-          export ANDROID_HOME=/usr/local/lib/android/sdk
-          export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
-          
-          # On lance le packaging dans le silence absolu !
           ./mvnw -B -e gluonfx:package -Dgluonfx.target=android
             
       - name: Upload APK
