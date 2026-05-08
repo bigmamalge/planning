@@ -79,6 +79,9 @@
 
                     <reflectionList>
                         <list>org.example.planning.HelloController</list>
+                        <list>javafx.scene.layout.VBox</list>
+                        <list>javafx.scene.control.TextArea</list>
+                        <list>javafx.geometry.Insets</list>
                     </reflectionList>
                     <resourcesList>
                         <list>.*\\.fxml$</list>
