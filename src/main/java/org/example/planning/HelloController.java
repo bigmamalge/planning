@@ -13,4 +13,9 @@ public class HelloController {
     private void initialize(){
         textArea.setText("Hello World!");
     }
+
+    @FXML
+    private void btnclick(){
+        textArea.setText("salutation");
+    }
 }
