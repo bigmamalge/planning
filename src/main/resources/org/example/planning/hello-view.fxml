@@ -11,7 +11,7 @@
             <Insets left="20.0" right="20.0" top="20.0" />
          </VBox.margin>
       </TextArea>
-      <Button mnemonicParsing="false" onAction="#btnclick" prefHeight="26.0" prefWidth="233.0" text="salut">
+      <Button mnemonicParsing="false" onAction="#sauvegarderJson" prefHeight="26.0" prefWidth="233.0" text="salut">
          <VBox.margin>
             <Insets left="20.0" right="20.0" />
          </VBox.margin>

@@ -59,6 +59,17 @@
             <version>4.0.19</version>
             <classifier>android</classifier>
         </dependency>
+        <dependency>
+            <groupId>com.gluonhq.attach</groupId>
+            <artifactId>storage</artifactId>
+            <version>4.0.19</version>
+            <classifier>desktop</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -79,6 +90,7 @@
 
                     <reflectionList>
                         <list>org.example.planning.PlanningController</list>
+                        <list>org.example.planning.DonneesPlanning</list>
                         <list>javafx.scene.layout.VBox</list>
                         <list>javafx.scene.control.TextArea</list>
                         <list>javafx.geometry.Insets</list>
