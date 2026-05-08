@@ -1,4 +1,4 @@
-name: Android Build
+name: Android Build (Clean)
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Gluon's GraalVM
+      - name: 1. Installer GraalVM (Le moteur)
         uses: gluonhq/setup-graalvm@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -19,37 +19,29 @@ jobs:
           graalvm: '22.1.0.1-Final'
           jdk: 'java17'
 
-      # ON SUPPRIME le Setup Android de GitHub pour arrêter le conflit !
-      
-      - name: Préparer Maven
-        run: chmod +x mvnw
-
-      - name: 1. Build Native Image
-        env:
-          JAVA_TOOL_OPTIONS: "-XX:-UseContainerSupport"
-        run: ./mvnw -B -e clean gluonfx:build -Dgluonfx.target=android
-
-      - name: 2. Package APK
+      - name: 2. Faire le ménage et Compiler
         run: |
-          # 1. On nettoie la console pour ne pas faire paniquer l'emballeur
+          # ON DÉTRUIT les configurations toxiques de GitHub pour que Gluon soit le seul maître
+          unset ANDROID_HOME
+          unset ANDROID_SDK_ROOT
+          
+          # ON DÉSACTIVE le bug mémoire de Linux
+          export JAVA_TOOL_OPTIONS="-XX:-UseContainerSupport"
+          
+          # ON LANCE LA COMPILATION
+          chmod +x mvnw
+          ./mvnw -B clean gluonfx:build -Dgluonfx.target=android
+
+      - name: 3. Créer l'APK (Dans le silence)
+        run: |
+          # ON DÉTRUIT la variable mémoire pour que la console soit muette et ne fasse pas planter le packaging
           unset JAVA_TOOL_OPTIONS
           
-          # 2. LA SOLUTION ULTIME : On force les deux variables à être strictement identiques
-          export ANDROID_HOME=$HOME/.gluon/substrate/Android
-          export ANDROID_SDK_ROOT=$HOME/.gluon/substrate/Android
-          
-          # 3. On emballe l'APK !
-          ./mvnw -B -e gluonfx:package -Dgluonfx.target=android
+          # ON CRÉE L'APK !
+          ./mvnw -B gluonfx:package -Dgluonfx.target=android
             
-      - name: Upload APK
+      - name: 4. Récupérer l'application
         uses: actions/upload-artifact@v4
         with:
-          name: mon-application-android
+          name: MonApplicationAndroid
           path: target/gluonfx/aarch64-android/gvm/*.apk
-
-      - name: Upload Logs
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: logs-erreur
-          path: target/gluonfx/aarch64-android/gvm/log/
