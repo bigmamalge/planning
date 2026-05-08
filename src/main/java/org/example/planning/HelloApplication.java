@@ -1,38 +1,26 @@
 package org.example.planning;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) {
-        try {
-            // On essaie de charger ton interface
-            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 300, 600);
-            stage.setTitle("Application");
-            stage.setScene(scene);
-            stage.show();
-        } catch (Throwable e) {
-            // SI ÇA PLANTE : ON AFFICHE L'ERREUR DIRECTEMENT SUR LE TÉLÉPHONE
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
+        // On crée un texte géant directement en Java, sans utiliser le FXML
+        Label label = new Label("VICTOIRE !\nL'ÉCRAN N'EST PLUS NOIR !");
+        label.setStyle("-fx-font-size: 24px; -fx-text-fill: white; -fx-font-weight: bold; -fx-text-alignment: center;");
 
-            Label errorLabel = new Label("CRASH DÉTECTÉ :\n" + sw.toString());
-            errorLabel.setWrapText(true);
-            errorLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold; -fx-font-size: 12px;");
+        // On met un fond bleu pour être sûr que ça charge
+        StackPane root = new StackPane(label);
+        root.setStyle("-fx-background-color: blue;");
 
-            ScrollPane scroll = new ScrollPane(errorLabel);
-            Scene errorScene = new Scene(scroll, 300, 600);
-            stage.setScene(errorScene);
-            stage.show();
-        }
+        Scene scene = new Scene(root, 400, 400); // Ces dimensions seront ignorées par Android !
+
+        stage.setTitle("Test Android");
+        stage.setScene(scene);
+        stage.show();
     }
 }
