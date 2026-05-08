@@ -18,7 +18,7 @@ public class HelloApplication extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
 
             // On crée la scène (les dimensions seront adaptées par Android)
-            Scene scene = new Scene(fxmlLoader.load(), 300, 600);
+            Scene scene = new Scene(fxmlLoader.load(), 250, 500);
 
             stage.setTitle("Mon Planning");
             stage.setScene(scene);
@@ -34,7 +34,7 @@ public class HelloApplication extends Application {
             errorLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold; -fx-padding: 10;");
 
             ScrollPane scroll = new ScrollPane(errorLabel);
-            Scene errorScene = new Scene(scroll, 300, 600);
+            Scene errorScene = new Scene(scroll, 250, 500);
             stage.setScene(errorScene);
             stage.show();
         }
