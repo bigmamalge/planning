@@ -81,9 +81,9 @@
                         <list>org.example.planning.HelloController</list>
                     </reflectionList>
                     <resourcesList>
-                        <list>.*\.fxml$</list>
-                        <list>.*\.css$</list>
-                        <list>.*\.png$</list>
+                        <list>.*\\.fxml$</list>
+                        <list>.*\\.css$</list>
+                        <list>.*\\.png$</list>
                     </resourcesList>
 
                     <attachList>
