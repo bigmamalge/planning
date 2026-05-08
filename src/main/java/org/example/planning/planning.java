@@ -10,12 +10,12 @@ import javafx.stage.Stage;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class HelloApplication extends Application {
+public class planning extends Application {
     @Override
     public void start(Stage stage) {
         try {
             // Tentative de chargement du fichier FXML
-            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(planning.class.getResource("hello-view.fxml"));
 
             // On crée la scène (les dimensions seront adaptées par Android)
             Scene scene = new Scene(fxmlLoader.load(), 250, 500);

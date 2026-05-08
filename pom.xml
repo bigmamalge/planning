@@ -74,11 +74,11 @@
                 <version>${gluonfx.plugin.version}</version>
                 <configuration>
                     <target>android</target>
-                    <mainClass>org.example.planning.HelloApplication</mainClass>
+                    <mainClass>org.example.planning.planning</mainClass>
                     <appIdentifier>org.example.planning</appIdentifier>
 
                     <reflectionList>
-                        <list>org.example.planning.HelloController</list>
+                        <list>org.example.planning.PlanningController</list>
                         <list>javafx.scene.layout.VBox</list>
                         <list>javafx.scene.control.TextArea</list>
                         <list>javafx.geometry.Insets</list>
