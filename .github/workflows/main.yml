@@ -19,11 +19,8 @@ jobs:
           graalvm: '22.1.0.1-Final'
           jdk: 'java17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: 'platforms;android-34 build-tools;34.0.0 ndk;26.1.10909125'
-
+      # ON SUPPRIME le Setup Android de GitHub pour arrêter le conflit !
+      
       - name: Préparer Maven
         run: chmod +x mvnw
 
@@ -34,15 +31,14 @@ jobs:
 
       - name: 2. Package APK
         run: |
-          # 1. On supprime la variable de GitHub pour éviter le conflit avec Gluon
-          unset ANDROID_SDK_ROOT
-          
-          # 2. On génère la clé de signature manuellement pour éviter le plantage de Gradle
-          mkdir -p ~/.android
-          keytool -genkeypair -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
-          
-          # 3. On enlève la variable bavarde de la mémoire et on package
+          # 1. On nettoie la console pour ne pas faire paniquer l'emballeur
           unset JAVA_TOOL_OPTIONS
+          
+          # 2. LA SOLUTION ULTIME : On force les deux variables à être strictement identiques
+          export ANDROID_HOME=$HOME/.gluon/substrate/Android
+          export ANDROID_SDK_ROOT=$HOME/.gluon/substrate/Android
+          
+          # 3. On emballe l'APK !
           ./mvnw -B -e gluonfx:package -Dgluonfx.target=android
             
       - name: Upload APK
